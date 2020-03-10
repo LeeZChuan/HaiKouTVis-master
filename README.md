@@ -13,7 +13,7 @@
        -calendarHeatMap.json：     日历热力图数据       
        -prediction.json：                 整体订单预测数据
 
-2. 使用WebStorm打开，运行final_fusai.html;
+2. 使用WebStorm打开，运行index.html;
 
 3. 由于数据量过大，仅上传其中具有代表性的几天数据，进行系统测试：
    2017-05-13、2017-05-14、2017-05-15、2017-05-16、2017-05-17、
