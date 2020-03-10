@@ -1,0 +1,2355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>前行者队-交通流量</title>
+    <style>
+        .mytimer input{
+            border:1px solid #ccc;
+            padding:6px 10px;
+        }
+        input::-webkit-input-placeholder {
+            color: white;
+        }
+        body {
+            margin: 0;
+        }
+        #main {
+            height: 100%;
+        }
+        .BMap_cpyCtrl {
+            display: none;
+        }
+        .anchorBL {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container-flex" tabindex="0" hidefocus="true">
+    <div class="box-left">
+        <div class="left-top">
+            <div class="weather-box">
+                <div class="data">
+                    <p>海口市交通分析可视化平台</p>
+                </div>
+            </div>
+            <div class="button-click" style="z-index: 99999;">
+                <div class="button-div">
+                    <button class="button button2" id="buttonKedou" onclick="showKedou()"><img src="images/chart_icon.png" style="margin-right: 10px">蝌蚪图</button>
+                </div>
+                <div class="button-div">
+                    <button class="button button2" id="buttonReli" onclick="showReli()"><img src="images/chart_icon.png" style="margin-right: 10px">热力图</button>
+                </div>
+                <div class="button-div">
+                    <button class="button button2" id="buttonQianxi" onclick="showQianxi()"><img src="images/chart_icon.png" style="margin-right: 10px">迁徙图</button>
+                </div>
+            </div>
+            <div class="button-click" id="kedouBtu" style="margin-right: 0px">
+                <div class="button-div">
+                </div>
+                <div class="button-div" style="z-index: 99999;margin-right:2px; width:8500px">
+                    <input class="button button2" type="text" style="color:white" placeholder="请选择日期" id="date">
+                    <p id="demo" style="display: none"></p>
+                </div>
+                <div class="button-div"style="z-index: 99999;margin-right:2px; width:8500px">
+                    <input id="hotmap3ds" class="button button2" onclick="myFunctions1()" type="button" value="输入时间" />
+                    <p id="demo1" style="display: none"></p>
+                </div>
+                <div class="button-div" style="z-index: 99999;margin-right: 2px; width:8500px">
+                    <input id="test2"  class="button button2" onclick="pushDatas()" type="button" value="订单量预测" />
+                </div>
+            </div>
+        </div>
+        <div class="left-center">
+            <div class="tongji">
+                <div style="height: 10%">
+                    <h1 style="color: #cdddf7; font-size: 0.2rem; font-weight: 900; text-align: center">实时统计</h1>
+                </div>
+                <div class="info-main">
+                    <ul>
+                        <li><img src="images/info-img-1.png" alt=""><p style="font-size: 12px; color: #cdddf7; opacity: .6;">长途占比(距离≥30KM)</p><p id="kuaiche1">12,457</p></li>
+                        <li><img src="images/info-img-2.png" alt=""><p style="font-size: 12px; color: #cdddf7; opacity: .6;">快车占比(快车出行比例)</p><p id="kuaiche2">12,457</p></li>
+                        <li><img src="images/info-img-3.png" alt=""><p style="font-size: 12px; color: #cdddf7; opacity: .6;">高价占比(费用≥60元)</p><p id="kuaiche3">12,457</p></li>
+                        <li><img src="images/info-img-4.png" alt=""><p style="font-size: 12px; color: #cdddf7; opacity: .6;">高时长占比(乘车时间≥1小时)</p><p id="kuaiche4">74%</p></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="left-bottom" class="select">
+            <div id="container" style="width: 100%; height: 100%; margin: 0 auto;"></div>
+        </div>
+    </div>
+    <div class="box-center">
+        <div class="center-bottom">
+            <div class="city-data" id="kedoutu" style="width: 100%; height: 100%; display: block"></div>
+            <div class="input-card" id="otherCharts" style="display:none;margin-right: 1500px;width: 200px;height: 200px;"></div>
+            <div class="input-card" id="">
+                <input id="mycolor" class="btn" onclick="myColor()" type="button" style="margin-bottom: 5px; margin-left: 90px; width: 150px" value="订单类别" />
+                <input id="pushData" class="btn" onclick="pushData()" type="button" style="margin-bottom: 5px; margin-left: 90px; width: 150px" value="拥塞分析" />
+                <input id="hotmap3d" class="btn" onclick="hotmap3d()" type="button" style="margin-bottom: -20px;margin-left: 90px; width: 150px" value="添加3D热力图" />
+                <!--                <input id="hotmap3dd" class="btn" onclick="hotmap3dd()" type="button" style="margin-bottom: -20px;margin-left: 90px; width: 150px" value="删除3D热力图" />-->
+            </div>
+            <div id ="dd"; style="display: none"></div>
+            <div class="city-data" id="relitu" style="width: 100%; height: 100%;"></div>
+            <ul class="modal-btn" id="idlis">
+                <li id="buttonli0" onclick="myFunctionsli0()">0</li>
+                <li id="buttonli1" onclick="myFunctionsli1()">1</li>
+                <li id="buttonli2" onclick="myFunctionsli2()">2</li>
+                <li id="buttonli3" onclick="myFunctionsli3()">3</li>
+                <li id="buttonli4" onclick="myFunctionsli4()">4</li>
+                <li id="buttonli5" onclick="myFunctionsli5()">5</li>
+                <li id="buttonli6" onclick="myFunctionsli6()">6</li>
+                <li id="buttonli7" onclick="myFunctionsli7()">7</li>
+                <li id="buttonli8" onclick="myFunctionsli8()">8</li>
+                <li id="buttonli9" onclick="myFunctionsli9()">9</li>
+                <li id="buttonli10" onclick="myFunctionsli10()">10</li>
+                <li id="buttonli11" onclick="myFunctionsli11()">11</li>
+                <li id="buttonli12" onclick="myFunctionsli12()">12</li>
+                <li id="buttonli13" onclick="myFunctionsli13()">13</li>
+                <li id="buttonli14" onclick="myFunctionsli14()">14</li>
+                <li id="buttonli15" onclick="myFunctionsli15()">15</li>
+                <li id="buttonli16" onclick="myFunctionsli16()">16</li>
+                <li id="buttonli17" onclick="myFunctionsli17()">17</li>
+                <li id="buttonli18" onclick="myFunctionsli18()">18</li>
+                <li id="buttonli19" onclick="myFunctionsli19()">19</li>
+                <li id="buttonli20" onclick="myFunctionsli20()">20</li>
+                <li id="buttonli21" onclick="myFunctionsli21()">21</li>
+                <li id="buttonli22" onclick="myFunctionsli22()">22</li>
+                <li id="buttonli23" onclick="myFunctionsli23()">23</li>
+            </ul>
+            <div class="city-data" id="qianxitu" style="width: 100%; height: 100%;"></div>
+
+            <!--            预测视图-->
+            <div class="city-data" id="yucetu" style="width: 100%; height: 100%;"></div>
+
+        </div>
+        <div class="center-bottom-bottom">
+            <div class="center-bottom-bottom-right" id="lineChart" style="width: 100%; height: 100%;">
+                <div class="right-chart"></div>
+            </div>
+        </div>
+    </div>
+    <div class="box-right">
+        <div class="right-top">
+            <div id="container_leidatu" style="height: 100%;"></div>
+        </div>
+        <div class="right-center">
+            <div id="rili" style="width: 100%;height: 100%; margin:0 auto;"></div>
+        </div>
+        <div class="right-bottom">
+            <div id="chart1" style="height: 100%; margin-bottom: 0px"></div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script src="https://code.highcharts.com.cn/highcharts/highcharts.js"></script>
+<script src="https://code.highcharts.com.cn/highcharts/modules/exporting.js"></script>
+<script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+<script src="https://webapi.amap.com/maps?v=1.4.15&key=c380530aa9ffc519378dd30409c0d370&plugin=AMap.DistrictSearch,AMap.Heatmap,AMap.CustomLayer,AMap.ControlBar,AMap.MouseTool,AMap.Autocomplete"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=53oVIOgmSIejwV7EfphPgTynOZbIiVYu"></script>
+<!--引入UI组件库（1.0版本） -->
+<script type="text/javascript" src="js/rem.js"></script>
+<script src="js/main.js"></script>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script src="js/echarts.min.js"></script>
+<script src="js/echarts-amap.min.js"></script>
+<script src="js/bmap.js"></script>
+<script type="text/javascript" src="js/echarts-gl.min.js"></script>
+<script type="text/javascript" src="js/echarts-gl.min.js"></script>
+<script src="js/utils.js"></script>
+<script type="text/javascript" src="js/bmap.min.js"></script>
+<!--<script type="text/javascript" src="data/heatmap3dData.js"></script>-->
+<script src="js/dateTime.min.js"></script>
+<script type="text/javascript" src="js/layer/layer.min.js"></script>
+<script type="text/javascript" src="js/layer/laydate/laydate.js"></script>
+<script type="text/javascript" src="js/china.js"></script>
+<script type="text/javascript" src="js/data/guangdong.js"></script>
+<script type="text/javascript" src="js/base.js"></script>
+<script src="https://code.highcharts.com.cn/highcharts/highcharts.js"></script>
+<script src="https://code.highcharts.com.cn/highcharts/modules/exporting.js"></script>
+<script src="https://code.highcharts.com.cn/highcharts/modules/sankey.js"></script>
+<script src="https://code.highcharts.com.cn/highcharts/modules/oldie.js"></script>
+<script src="https://code.highcharts.com.cn/highcharts/modules/dependency-wheel.js"></script>
+
+<link rel="icon" href="https://jscdn.com.cn/highcharts/images/favicon.ico">
+<link rel="stylesheet" href="css/dateTime.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/app.css"/>
+
+<!--视图切换-->
+<script>
+    function showKedou(){
+        document.getElementById("idlis").style.display="none";
+        document.getElementById("kedoutu").style.display="block";
+        document.getElementById("relitu").style.display="none";
+        document.getElementById("qianxitu").style.display="none";
+        document.getElementById("yucetu").style.display="none";
+        myChart_line.setOption(optionCalen, true);
+    }
+
+    function showReli()
+    {
+        document.getElementById("idlis").style.display="block";
+        document.getElementById("kedoutu").style.display="none";
+        document.getElementById("relitu").style.display="block";
+        document.getElementById("qianxitu").style.display="none";
+        document.getElementById("yucetu").style.display="none";
+        myChart_line.setOption(optionCalen, true);
+    }
+
+    function showQianxi() {
+        document.getElementById("idlis").style.display="none";
+        document.getElementById("kedoutu").style.display="none";
+        document.getElementById("relitu").style.display="none";
+        document.getElementById("qianxitu").style.display="block";
+        document.getElementById("yucetu").style.display="none";
+        myChart_line.setOption(optionCalen, true);
+    }
+
+    function pushDatas() {
+        document.getElementById("idlis").style.display="none";
+        document.getElementById("kedoutu").style.display="none";
+        document.getElementById("relitu").style.display="none";
+        document.getElementById("qianxitu").style.display="none";
+        document.getElementById("yucetu").style.display="block";
+        myChart_line.setOption(optionYuce, true);
+        myYuce.setOption(optionYuceDitu, true);
+    }
+</script>
+
+<!--按钮-->
+<script>
+    var cc = echarts.init(document.getElementById('relitu'));
+    function myFunctionsli1() {
+        var a=document.getElementById("buttonli1").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a)
+    }
+
+    function myFunctionsli2() {
+        var a=document.getElementById("buttonli2").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a)
+    }
+
+    function myFunctionsli3() {
+        var a=document.getElementById("buttonli3").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a)
+    }
+
+    function myFunctionsli4() {
+        var a=document.getElementById("buttonli4").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a)
+    }
+
+    function myFunctionsli5() {
+        var a=document.getElementById("buttonli5").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a)
+    }
+
+    function myFunctionsli6() {
+        var a=document.getElementById("buttonli6").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a)
+    }
+
+    function myFunctionsli7() {
+        var a=document.getElementById("buttonli7").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a)
+    }
+
+    function myFunctionsli8() {
+        var a=document.getElementById("buttonli8").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a)
+    }
+
+    function myFunctionsli9() {
+        var a=document.getElementById("buttonli9").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a)
+    }
+
+    function myFunctionsli10() {
+        var a=document.getElementById("buttonli10").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a)
+    }
+
+    function myFunctionsli11() {
+        var a=document.getElementById("buttonli11").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a)
+    }
+
+    function myFunctionsli12() {
+        var a=document.getElementById("buttonli12").textContent;
+        var g=document.getElementById("demo").textContent;
+        var cc = echarts.init(document.getElementById('relitu'));
+        cc.clear();
+        myFunction(g,a)
+    }
+
+    function myFunctionsli13() {
+        var a=document.getElementById("buttonli13").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a)
+    }
+
+    function myFunctionsli14() {
+        var a=document.getElementById("buttonli14").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a)
+    }
+
+    function myFunctionsli15() {
+        var a=document.getElementById("buttonli15").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a)
+    }
+
+    function myFunctionsli16() {
+        var a=document.getElementById("buttonli16").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a)
+    }
+
+    function myFunctionsli17() {
+        var a=document.getElementById("buttonli17").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a)
+
+    }
+
+    function myFunctionsli18() {
+        var a18=document.getElementById("buttonli18").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a18)
+    }
+
+    function myFunctionsli19() {
+        var a19=document.getElementById("buttonli19").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a19)
+    }
+
+    function myFunctionsli20() {
+        var a20=document.getElementById("buttonli20").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a20)
+    }
+
+    function myFunctionsli21() {
+        var a21=document.getElementById("buttonli21").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a21)
+    }
+
+    function myFunctionsli22() {
+        var a22=document.getElementById("buttonli22").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a22)
+    }
+
+    function myFunctionsli23() {
+        var a23=document.getElementById("buttonli23").textContent;
+        var g=document.getElementById("demo").textContent;
+        cc.clear();
+        myFunction(g,a23)
+    }
+</script>
+
+<!--输入日期-->
+<script>
+    var selectDate='';
+    $("#date").datetime({
+        type:"date",
+        value:[2017,5,1],
+        success:function(res){
+            if(res[1]<=9)
+                res[1]='0'+res[1];
+            if(res[2]<=9)
+                res[2]='0'+res[2];
+            selectDate=res[0]+ '-' + res[1] + '-' + res[2]
+            var b= selectDate.split('-')[2];
+            var e= selectDate.split('-')[1];
+            ShowFastCar(e,b);
+            Mychart1s(selectDate);
+            var g=0;
+            var myChartkk = echarts.init(document.getElementById('kedoutu'))
+            myChartkk.clear();
+            myFunction(selectDate,g);
+            leidatus (selectDate);
+            HexianTu(selectDate);
+            qianxitu(selectDate);
+            kedoutu(selectDate,g);
+            yuceFun(selectDate);
+        }
+    })
+
+    window.onload=function(){
+        var totleTp = 0;
+        var tppiao = document.getElementsByClassName("tppiao");
+        for(var i=0;i<tppiao.length;i++){totleTp+=parseInt(tppiao[i].innerHTML);}
+        var tpdetial = document.getElementsByClassName("tpdetial");
+        for(var i=0;i<tpdetial.length;i++){var mun = parseInt(tpdetial[i].getElementsByClassName("tppiao")[0].innerHTML);var bfb = (mun*100/totleTp).toFixed(2)+"%";tpdetial[i].getElementsByClassName("tppercent")[0].innerHTML = bfb;
+        }
+    }
+
+    if(window.location.href.indexOf("udsid=")>-1){
+        $("#ctlNext").on("click",function(){
+            console.log("执行成功！")
+            meteor.track("form", {convert_id: "1641358861914125"})
+        })
+    }
+</script>
+
+<!--输入时间-->
+<script>
+    function myFunctions1() {
+        var myChartkk = echarts.init(document.getElementById('kedoutu'))
+        myChartkk.clear();
+        document.getElementById("idlis").style.display="none";
+        var txt;
+        var person = prompt("请输入时间：", "1时");
+        if (person == null || person == "") {
+            txt = person;
+        } else {
+            txt =person;
+
+        }
+        document.getElementById("demo1").innerHTML = txt;
+        var g =document.getElementById("demo1").textContent.split('时')[0];
+        var f=document.getElementById("demo").textContent;
+        kedoutu(f,g)
+
+    }
+</script>
+
+<!--蝌蚪图-->
+<script>
+    var tempbusLinesk=new Array();
+    var tempbusLinesk2=new Array();
+    function kedoutu(f,g) {
+        var myChartk = echarts.init(document.getElementById('kedoutu'))
+        var didiData = new Array();
+
+        $.ajax({                                                                                                        // 读取json文件到didiData
+            url: 'data/kedoutu/' + f +'/' + g + '小时.json',
+            async: false,
+            success: function (data) {
+                didiData = data;
+            }
+        });
+
+        var hStep = 300 / (didiData.length - 1);                                                                        //路径颜色
+        busLinesk = [].concat.apply([], didiData.map(function (busLine, idx) {
+            var points = [];                                                                                            //每条轨迹的数据
+            for (var i = 0; i < busLine[0].length; i += 2) {
+                var pt = [busLine[0][i], busLine[0][i + 1]];                                                            //初始化pt坐标
+                points.push([pt[0], pt[1]]);                                                                            //存入points
+            }
+            return {
+                                                                                                                        //往buslines返回数据
+                coords: points,
+                lineStyle: {
+                    normal: {
+                        color: echarts.color.modifyHSL('rgb(255,122,0)', Math.round(hStep * idx))//
+                    }
+                }
+            };
+        }));
+        tempbusLinesk = busLinesk;
+
+        var busLinesk2 = [].concat.apply([], didiData.map(function (busLine, idx) {                                     //用于蝌蚪图画线，数据处理待优化
+            var points = [];
+            for (var i = 0; i < busLine[0].length; i += 2) {
+                var pt = [busLine[0][i], busLine[0][i + 1]];
+                points.push([pt[0], pt[1]]);                                                                            //存入points
+            }
+            return {
+                coords: points,                                                                                         //往buslines返回数据
+            };
+        }));
+        tempbusLinesk2 = busLinesk2;
+        myChartk.setOption(option = {
+            title : {
+                text: "海口市车流量蝌蚪图",
+                left: 'center',
+                top: 20,
+                textStyle:{
+                    color: '#cdddf7',
+                    fontSize: 20
+                },
+                subtextStyle:{
+                    color: 'white',
+                    fontSize: 16
+                }
+            },
+                                                                                                                        // 加载 amap 组件
+            amap: {                                                                                                     // 高德地图支持的初始化地图配置
+                center: [110.32835483551025, 20.01996791722277],                                                        // 高德地图初始中心经纬度
+                zoom: 13,                                                                                               // 高德地图初始缩放级别
+                resizeEnable: true,                                                                                     // 是否开启resize
+                mapStyle: "amap://styles/grey",                                                                         // 自定义地图样式主题
+                echartsLayerZIndex: 2019,                                                                               // 高德地图自定义EchartsLayer的zIndex，默认2000
+                // 说明：如果想要添加卫星、路网等图层
+                // 暂时先不要使用layers配置，因为存在Bug
+                // 建议使用amap.add的方式，使用方式参见最下方代码
+                viewMode: '3D',                                                                                         //开启3D视图,默认为关闭
+                buildingAnimation: true,                                                                                //楼块出现是否带动画
+
+            },
+            series: [
+                {
+                    type: 'lines',
+                    coordinateSystem: 'amap',
+                    polyline: true,
+                    data: busLinesk,
+                    lineStyle: {
+                        normal: {
+                            width: 0
+                        }
+                    },
+                    effect: {
+                        constantSpeed: 20,
+                        show: true,
+                        trailLength: 0.1,
+                        symbolSize: 1.5
+                    },
+                    zlevel: 1
+                }
+            ],
+        })
+    }
+
+    function myColor(){
+        var g =document.getElementById("demo1").textContent.split('时')[0];
+        var f=document.getElementById("demo").textContent;
+        var myChartk = echarts.init(document.getElementById('kedoutu'))
+        myChartk.clear();
+        var didiData = new Array();
+
+        $.ajax({                                                                                                        // 读取json文件到didiData
+            url: 'data/kedoutu/'+f+'/'+g+'小时.json',
+            async: false,
+            success: function (data) {
+                didiData = data;
+            }
+        });
+
+        var hStep = 300 / (didiData.length - 1);                                                                        //路径颜色
+        busLinesk = [].concat.apply([], didiData.map(function (busLine, idx) {
+            var points = [];
+            for (var i = 0; i < busLine[0].length; i += 2) {                                                            //每条轨迹的数据
+                var pt = [busLine[0][i], busLine[0][i + 1]];                                                            //初始化pt坐标
+                points.push([pt[0], pt[1]]);                                                                            //存入points
+            }
+
+            return {                                                                                                    //往buslines返回数据
+                coords: points,
+                lineStyle: {
+                    normal: {
+                        color: echarts.color.modifyHSL('rgb(255,122,0)', Math.round(hStep * idx))
+                    }
+                }
+            };
+        }));
+        tempbusLinesk = busLinesk;
+                                                                                                                        //用于蝌蚪图画线，数据处理待优化
+        var busLinesk2 = [].concat.apply([], didiData.map(function (busLine, idx) {
+            var points = [];
+            for (var i = 0; i < busLine[0].length; i += 2) {
+                var pt = [busLine[0][i], busLine[0][i + 1]];
+                points.push([pt[0], pt[1]]);                                                                            //存入points
+            }
+            return {                                                                                                    //往buslines返回数据
+                coords: points,
+            };
+        }));
+        tempbusLinesk2 = busLinesk2;
+        myChartk.setOption(option = {                                                                                   // 加载 amap 组件
+            amap: {                                                                                                                                                                                                     // 高德地图支持的初始化地图配置
+                center: [110.32835483551025, 20.01996791722277],                                                        // 高德地图初始中心经纬度
+                zoom: 13,                                                                                               // 高德地图初始缩放级别
+                resizeEnable: true,                                                                                     // 是否开启resize
+                mapStyle: "amap://styles/grey",                                                                         // 自定义地图样式主题
+                echartsLayerZIndex: 2019,                                                                               // 高德地图自定义EchartsLayer的zIndex，默认2000
+                // 说明：如果想要添加卫星、路网等图层
+                // 暂时先不要使用layers配置，因为存在Bug
+                // 建议使用amap.add的方式，使用方式参见最下方代码
+                viewMode: '3D',                                                                                         //开启3D视图,默认为关闭
+                buildingAnimation: true,                                                                                //楼块出现是否带动画
+            },
+            series: [
+                {
+                    type: 'lines',
+                    // coordinateSystem: 'bmap',
+                    coordinateSystem: 'amap',
+                    polyline: true,
+                    data: busLinesk,
+                    lineStyle: {
+                        normal: {
+                            width: 0,
+                        }
+                    },
+                    effect: {
+                        constantSpeed: 20,
+                        show: true,
+                        trailLength: 0.1,
+                        symbolSize: 1.5
+                    },
+                    zlevel: 1
+                }
+            ],
+
+        });
+        var series = [
+            {
+                type: 'lines',
+                coordinateSystem: 'amap',
+                polyline: true,
+                data: busLinesk,
+                lineStyle: {
+                    normal: {
+                        width: 0,
+                    }
+                },
+                effect: {
+                    constantSpeed: 20,
+                    show: true,
+                    trailLength: 0.1,
+                    symbolSize: 1.5
+                },
+                zlevel: 1
+            }
+        ];
+        if (document.getElementById("pushData").value === "订单类别") {
+
+            series.push({
+                type: 'lines',
+                coordinateSystem: 'amap',
+                polyline: true,
+                data: busLinesk2,
+                silent: true,
+                lineStyle: {
+                    normal: {
+                        opacity: 0.2,
+                        width: 1
+                    }
+                },
+                progressiveThreshold: 500,
+                progressive: 200,
+            })
+        }
+    }
+
+    //*模块二：添加/删除线
+    function pushData(f,g) {
+        var g =document.getElementById("demo1").textContent.split('时')[0];
+        var f=document.getElementById("demo").textContent;
+        var myChartk = echarts.init(document.getElementById('kedoutu'))
+        var didiData = new Array();
+
+        $.ajax({                                                                                                        // 读取json文件到didiData
+            url: 'data/kedoutu/'+f+'/'+g+'小时.json',
+            async: false,
+            success: function (data) {
+                didiData = data;
+            }
+        });
+
+        var hStep = 300 / (didiData.length - 1);                                                                        //路径颜色
+        busLinesk = [].concat.apply([], didiData.map(function (busLine, idx) {
+            var points = [];
+            for (var i = 0; i < busLine[0].length; i += 2) {                                                            //每条轨迹的数据
+                var pt = [busLine[0][i], busLine[0][i + 1]];                                                            //初始化pt坐标
+                points.push([pt[0], pt[1]]);                                                                            //存入points
+            }
+            return {                                                                                                    //往buslines返回数据
+                coords: points,
+                lineStyle: {
+                    normal: {
+                        color:'rgb(255,0,0)'
+                    }
+                }
+            };
+        }));
+        tempbusLinesk = busLinesk;
+
+        myChartk.setOption(option = {
+            amap: {                                                                                                     // 加载 amap 组件  高德地图支持的初始化地图配置
+                center: [110.32835483551025, 20.01996791722277],                                                        // 高德地图初始中心经纬度
+                zoom: 13,                                                                                               // 高德地图初始缩放级别
+                resizeEnable: true,                                                                                     // 是否开启resize
+                mapStyle: "amap://styles/grey",                                                                         // 自定义地图样式主题
+                echartsLayerZIndex: 2019,                                                                               // 高德地图自定义EchartsLayer的zIndex，默认2000
+                // 说明：如果想要添加卫星、路网等图层
+                // 暂时先不要使用layers配置，因为存在Bug
+                // 建议使用amap.add的方式，使用方式参见最下方代码
+                viewMode: '3D',                                                                                         //开启3D视图,默认为关闭
+                buildingAnimation: true,                                                                                //楼块出现是否带动画
+            },
+            series: [
+                {
+                    type: 'lines',
+                    coordinateSystem: 'amap',
+                    polyline: true,
+                    data: busLinesk,
+                    effect: {
+                        constantSpeed: 20,
+                        show: true,
+                        trailLength: 0.1,
+                        symbolSize: 1.5
+                    },
+                    zlevel: 1
+                }
+            ],
+
+        });
+        myChartk.setDataSet(busLinesk1);
+    }
+
+    function hotmap3d() {
+        var g =document.getElementById("demo1").textContent.split('时')[0];
+        var f=document.getElementById("demo").textContent;
+        var myChartk = echarts.init(document.getElementById('kedoutu'))
+        var didiData = new Array();
+        myChartk.setOption(option = {
+            amap: {                                                                                                     // 加载 amap 组件
+                center: [110.32835483551025, 20.01996791722277],                                                        // 高德地图初始中心经纬度
+                zoom: 13,                                                                                               // 高德地图初始缩放级别
+                resizeEnable: true,                                                                                     // 是否开启resize
+                mapStyle: "amap://styles/grey",                                                                         // 自定义地图样式主题
+                echartsLayerZIndex: 2019,                                                                               // 高德地图自定义EchartsLayer的zIndex，默认2000
+                viewMode: '3D',                                                                                         //开启3D视图,默认为关闭
+                buildingAnimation: true,                                                                                //楼块出现是否带动画
+            },
+        })
+
+        var layer = myChartk.getModel().getComponent('amap').getLayer();
+        var map = myChartk.getModel().getComponent('amap').getAMap();
+        layer.setzIndex(2019)
+        map.addControl(new AMap.ControlBar({
+            showZoomBar: false,
+            showControlButton: true,
+            position: {
+                right: '10px',
+                top: '10px'
+            }
+        }))
+
+        var heatmap = new AMap.Heatmap(map, heatmapOpts);                                                               //初始化heatmap对象
+        var heatmap2 = new AMap.Heatmap(map, heatmapOpts2);
+
+        var heatmapData = new Array()//start                                                                            //3d热力图数据
+        $.ajax({
+            url: 'data/'+f+'_start/'+g+'.json',
+            async: false,
+            success: function (data) {
+                heatmapData = data;
+            }
+        });
+
+        var heatmapData2 = new Array()
+        $.ajax({
+            url: 'data/'+f+'_start/'+g+'.json',
+            async: false,
+            success: function (data) {
+                heatmapData2 = data;
+            }
+        });
+
+        //*模块五：3d热力图
+        var heatmapOpts = {                                                                                             //出发
+            gradient: {
+                0.5: 'rgb(0,255,0)',
+                0.65: 'rgb(0,255,127)',
+                0.7: 'rgb(0,255,255)',
+                0.9: 'rgb(0,127,255)',
+                1.0: 'rgb(0,0,255)'
+            },
+        };
+
+        var heatmapOpts2 = {                                                                                            //到达
+            gradient: {
+                0.5: 'rgb(255,255,0)',
+                0.65: 'rgb(255,180,0)',
+                0.7: 'rgb(255,200,0)',
+                0.9: 'rgb(255,80,0)',
+                1.0: 'rgb(255,0,0)'
+            }
+        };
+        heatmap2.setDataSet({
+            data: heatmapData2,
+            max: 20
+        });
+        heatmap.setDataSet({
+            data: heatmapData,
+            max: 20
+        });
+    }
+
+
+</script>
+
+<!--右下-折线图-->
+<script type="text/javascript">
+    var dom = document.getElementById("chart1");
+    var myChart1 = echarts.init(dom);
+
+    option = null;
+    var app = {};
+    app.title = '海口市滴滴订单数量/以及出行相关情况折线图';
+
+    var fontColor = '#cdddf7';
+    function Mychart1s(a){
+        var temp=a;
+        $.get('data/'+temp+'_lineChart.json', function (data) {
+            var colors = ['rgba(76,180,231,0.4)', '#d14a61', '#675bba'];                                                //修改颜色
+            myChart1.setOption(option = {
+                color: colors,
+                tooltip: {
+                    show: true,
+                    trigger: 'item'
+                },
+                grid: {
+                    left: '3%',
+                    right: '0%',
+                    top: '20%',
+                    bottom: '0%',
+                    containLabel: true
+                },
+                legend: {                                                                                               //还可以展现很多信息（例如，节假日，具体天气情况等等），在这里添加在series里添加数据调用即可
+                    show: true,
+                    right: '0%',
+                    icon: 'stack',
+                    itemWidth: 10,
+                    itemHeight: 10,
+                    textStyle: {
+                        color: '#cdddf7'
+                    },
+                    data: ['出行时间', '出行距离', '订单数量']
+                },
+                xAxis: [{
+                    type: 'category',
+                    boundaryGap: false,
+                    axisLabel: {
+                        color: fontColor
+                    },
+                    axisLine: {
+                        show: true,
+                        lineStyle: {
+                            color: '#397cbc'
+                        }
+                    },
+                    axisTick: {
+                        show: false,
+                    },
+                    splitLine: {
+                        show: true,
+                        lineStyle: {
+                            color: '#57617B'
+                        }
+                    },
+                    data: data.map(function (item) {                                                                    // 小时数据
+                        return item[0];
+                    }),
+
+                }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: '订单数量',
+                        min: 0,
+                        max:15000,
+                        axisLabel: {
+                            formatter: '{value}',
+                            textStyle: {
+                                color: 'rgb(97,165,207)'
+                            }
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: 'rgb(97,165,207)'
+                            }
+                        },
+                        axisTick: {
+                            show: false,
+                        },
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                color: 'rgb(97,165,207)'
+                            }
+                        }
+                    },
+                    {
+                        type: 'value',
+                        name: '出行距离',
+                        min: 0,
+                        max: 25,
+                        axisLabel: {
+                            formatter: '{value} km',
+                            textStyle: {
+                                color: 'rgb(246,150,23)'
+                            }
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: 'rgb(246,150,23)'
+                            }
+                        },
+                        axisTick: {
+                            show: false,
+                        },
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                color: '#11366e',
+                                type: 'dashed',
+                            }
+                        }
+                    }],
+                series: [{
+                    name: '出行距离',
+                    type: 'line',
+                    stack: '总量',
+                    symbol: 'circle',
+                    symbolSize: 8,
+                    yAxisIndex: 1,
+                    itemStyle: {
+                        emphasis: {
+                            color: 'rgb(246,150,23)',
+                            borderColor: 'rgba(246,150,23,0.2)',
+                            extraCssText: 'box-shadow: 8px 8px 8px rgba(0, 0, 0, 1);',
+                            borderWidth: 10
+                        },
+                        normal: {
+                            color: 'rgb(246,150,23)',
+                            lineStyle: {
+                                color: "rgb(246,150,23)",
+                                width: 1
+                            },
+                            areaStyle: {
+                                //color: '#94C9EC'
+                                color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+                                    offset: 0,
+                                    color: 'rgba(7,44,90,0.1)'
+                                }, {
+                                    offset: 1,
+                                    color: 'rgba(246,150,23,0.9)'
+                                }]),
+                            }
+                        }
+                    },
+                    data: data.map(function (item) {                                                                    //添加出行距离数据
+                        return item[2];
+                    })
+                },
+                    {
+                        name: '订单数量',
+                        type: 'line',
+                        stack: '总量',
+                        symbol: 'circle',
+                        symbolSize: 8,
+                        itemStyle: {
+                            emphasis: {
+                                color: 'rgb(97,165,207)',
+                                borderColor: 'rgba(97,165,207,0.2)',
+                                extraCssText: 'box-shadow: 8px 8px 8px rgba(0, 0, 0, 1);',
+                                borderWidth: 10
+                            },
+                            normal: {
+                                color: 'rgb(97,165,207)',
+                                lineStyle: {
+                                    color: "rgb(97,165,207)",
+                                    width: 1
+                                },
+                                areaStyle: {
+                                    color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+                                        offset: 0,
+                                        color: 'rgba(7,44,90,0.1)'
+                                    }, {
+                                        offset: 1,
+                                        color: 'rgba(97,165,207,0.9)'
+                                    }]),
+                                }
+                            }
+                        },
+                        data: data.map(function (item) {                                                                //添加订单数量数据
+                            return item[1];
+                        })
+                    }]
+            });
+            if (option && typeof option === "object") {
+                myChart1.setOption(option, true);
+            }
+            myChart1.setOption(option, true);
+        })
+    }
+</script>
+
+<!--热力图-->
+<script>
+    function myFunction(a,g,x) {
+        var flag=0
+
+        if (flag==1){
+            location.reload();
+        }
+
+        var flag = 0
+        var myChartks = echarts.init(document.getElementById('relitu'))
+        myChartks.setOption(option = {
+            title : {
+                text: "海口市车流量热力图",
+                left: 'center',
+                top: 20,
+                textStyle:{
+                    color: '#cdddf7',
+                    fontSize: 20
+                },
+                subtextStyle:{
+                    color: 'white',
+                    fontSize: 16
+                }
+            },
+            amap: {
+                center: [110.33835483551025, 20.01996791722277],                                                        // 高德地图初始化中心经纬度
+                zoom: 12,                                                                                               // 高德地图初始缩放级别
+                resizeEnable: true,                                                                                     // 是否开启resize
+                mapStyle: "amap://styles/grey",                                                                         // 自定义地图样式主题
+                echartsLayerZIndex: 2019,                                                                               // 高德地图自定义EchartsLayer的zIndex，默认2000
+                viewMode: '3D',                                                                                         // 开启3D视图,默认为关闭
+                buildingAnimation: true,                                                                                // 楼块出现是否带动画
+            },
+        })
+        var layer = myChartks.getModel().getComponent('amap').getLayer();
+        var map = myChartks.getModel().getComponent('amap').getAMap();
+        layer.setzIndex(2019)
+        map.addControl(new AMap.ControlBar({
+            showZoomBar: false,
+            showControlButton: true,
+            position: {
+                right: '10px',
+                top: '10px'
+            }
+        }))
+
+        var heatmap = new AMap.Heatmap(map, heatmapOpts);                                                               //初始化heatmap对象
+        var heatmap2 = new AMap.Heatmap(map, heatmapOpts2);
+
+        var heatmapData = new Array()//start
+        var heatmapData2 = new Array()//dest
+        $.ajax({
+            url: 'data/'+a+'_start/' + g + '.json',
+            async: false,
+            success: function (data) {
+                heatmapData = data;
+            }
+        });
+        $.ajax({
+            url: 'data/'+a+'_dest/' + g + '.json',
+            async: false,
+            success: function (data) {
+                heatmapData2 = data;
+
+            }
+        });
+
+        //*模块五：3d热力图
+        var heatmapOpts = {                                                                                             //出发区域
+
+            gradient: {
+                0.5: 'rgb(0,255,0)',
+                0.65: 'rgb(0,255,127)',
+                0.7: 'rgb(0,255,255)',
+                0.9: 'rgb(0,127,255)',
+                1.0: 'rgb(0,0,255)'
+            },
+        };
+        var heatmapOpts2 = {                                                                                            //到达区域
+
+            gradient: {
+                0.5: 'rgb(255,255,0)',
+                0.65: 'rgb(255,180,0)',
+                0.7: 'rgb(255,200,0)',
+                0.9: 'rgb(255,80,0)',
+                1.0: 'rgb(255,0,0)'
+            }
+        };
+
+        heatmap2.setDataSet({
+            data: heatmapData2,
+            max: 20
+        });
+        heatmap.setDataSet({
+            data: heatmapData,
+            max: 20
+        });
+    }
+</script>
+
+<!--日历图-->
+<script type="text/javascript">
+    var dom = document.getElementById("rili");
+    var myChart_rili = echarts.init(dom);
+
+    option = null;
+    var app = {};
+    app.title = '海口市订单日历图 ';
+
+    var sankeyData = new Array();                                                                                       // 读取json文件到didiData
+    $.ajax({
+        url: 'data/calendarHeatMap.json',
+        async: false,
+        success: function (data) {
+            dailyData = data;
+        }
+    });
+
+    function getVirtulData(year) {
+        var temp=0;
+        if(year==2018){
+            temp=1;
+            year=2017;
+        }
+        year = year || '2017';
+        var date = +echarts.number.parseDate(year + '-01-01');
+        var end = +echarts.number.parseDate((+year + 1) + '-01-01');
+        var dayTime = 3600 * 24 * 1000;
+        var data = [];
+        var data1 = [];
+        for (i = 0; i < dailyData.length; i++) {
+            data.push([dailyData[i][0],dailyData[i][1],dailyData[i][2],dailyData[i][3],dailyData[i][7],dailyData[i][6],dailyData[i][1]])
+            data1.push([dailyData[i][0],dailyData[i][1]])
+        }
+        if(temp==0){
+            return data;
+        }else{
+            return data1;
+        }
+    }
+
+    var data = getVirtulData(2017);
+    var weatherData = new Array();
+    for(i=0;i<dailyData.length;i++){
+        weatherData.push([dailyData[i][0],dailyData[i][1]])
+    }
+
+    myChart_rili.setOption(option = {
+        title: {
+            left: 'center',
+            textStyle: {
+                color: '#cdddf7',
+                fontSize: 14
+            }
+        },
+        chart:{
+            backgroundColor:'rgba(128, 128, 128, 0.1)'
+        },
+        tooltip: {
+            trigger: 'item',
+            position: 'bottom',
+            formatter: function (params) {
+                if(params.value[4]==""){
+                    return '日期: ' + params.value[0] + '<br/>' + '交易量: ' + params.value[1]+ '<br/>'+'天气: ' + params.value[2]+ '<br/>'+'星期:'
+                        + params.value[3]+ '<br/>'+'平均温度:  ' +  params.value[5] +'<br/>'+'节假日:  ' + '无';
+                }else{
+                    return '日期: ' + params.value[0] + '<br/>' + '交易量: ' + params.value[1]+ '<br/>'+'天气: ' + params.value[2]+ '<br/>'+'星期:'
+                        + params.value[3]+ '<br/>'+'平均温度:  ' +  params.value[5] +'<br/>'+'节假日:' + params.value[4];
+                }
+            },
+        },
+
+        visualMap: {                                                                                                    //更新了热力图的颜色范围展示
+            left: 'center',
+            top: '8%',
+            orient:"horizontal",
+            min: 0,
+            max: 120000,
+            splitNumber:6,                                                                                              //对于连续型数据，自动平均切分成几段。默认为5段
+            pieces: [                                                                                                   //自定义『分段式视觉映射组件（visualMapPiecewise）』的每一段的范围，以及每一段的文字，以及每一段的特别的样式
+                {min:100000, label:'>10万'},
+                {min: 80000, max: 100000, label:'<10万'},                                                               // 不指定 max，表示 max 为无限大（Infinity）。
+                {min: 70000, max: 80000, label:'<8万'},
+                {min: 40000, max: 70000, label:'<6万'},
+                {min: 20000, max: 40000, label:'<4万'},
+                {max: 20000, label:'<2万'}                                                                              // 不指定 min，表示 min 为无限大（-Infinity）。
+            ],
+            inRange: {
+                color: ['#E9F4FA', '#B8DAEA', '#BFD7EF', '#3F8FC6', '#18639E', '#073067']
+            },
+            textStyle: {
+                color: '#cdddf7'
+            }
+        },
+        calendar: [{
+            top: '32%',
+            bottom:'15%',
+            cellSize: [16, 25],
+            left: '8%',
+            range: ['2017-05-01', '2017-10-31'],
+            splitLine: {
+                show: true,
+                lineStyle: {
+                    color: '#000',
+                    width: 5,
+                    type: 'solid'
+                }
+            },
+            yearLabel:{
+                show: false
+            },
+            dayLabel: {
+                firstDay: 1,
+                nameMap: 'cn',
+                color:'#cdddf7'
+            },
+            monthLabel: {
+                show: true,
+                nameMap: 'cn',
+                color:'#cdddf7'
+            },
+            itemStyle: {
+                normal: {
+                    color: '#323c48',
+                    borderWidth: 2,
+                    borderColor: '#111'
+                }
+            },
+        }
+        ],
+        series: [
+            {
+                name: '交易量：',
+                type: 'heatmap',
+                coordinateSystem: 'calendar',
+                calendarIndex: 0,
+                data: data,
+            },
+        ]
+    });
+    if (option && typeof option === "object") {
+        myChart_rili.setOption(option, true);
+    }
+</script>
+
+<!--预测视图-->
+<script>
+    var myYuce = echarts.init(document.getElementById('yucetu'));
+    // var yuceVal='2017-05-01';
+    var geoCoordMap = {
+        "Market": [110.32354199623335, 20.02158601280024],                                                              // 商场
+        "Hospital1": [110.33388648979098, 20.029357312123295],                                                          // 附属医院
+        "Station": [110.34600449319761, 19.982437787047544],                                                            // 车站
+        "Square": [110.3419978414701, 20.028707619877615],                                                              // 广场
+        "Government": [110.3486952530797, 20.01874102105557],                                                           // 政府
+        "University":[110.34134652693201, 19.99932256358843],                                                           // 大学
+        "Friendship":[110.34064896567928, 20.039496528046975],                                                          // 友谊商城
+        "Hotal":[110.3003359682968, 20.02209205730502],                                                                 // 酒店
+        "Hospital2":[110.28733273053196, 20.004736626542677]                                                            // 医院
+    };
+
+    function yuceFun(yuceVal) {
+        var dataFile_shangchang =new Array();                                                                           // 商场数据读取
+        $.ajax({
+            url:'data/yuce/shangchang/'+yuceVal+'.json',
+            async:false,
+            success: function(data){
+                dataFile_shangchang = data;
+            }
+        })
+
+        var dataFile_fushuyiyuan =new Array();                                                                          // 附属医院数据读取
+        $.ajax({
+            url:'data/yuce/yiyuan_fushu/'+yuceVal+'.json',
+            async:false,
+            success: function(data){
+                dataFile_fushuyiyuan = data;
+            }
+        })
+
+        var dataFile_chezhan =new Array();                                                                              // 车站数据读取
+        $.ajax({
+            url:'data/yuce/chezhan/'+yuceVal+'.json',
+            async:false,
+            success: function(data){
+                dataFile_chezhan = data;
+                console.log(dataFile_chezhan)
+            }
+        })
+
+        var dataFile_guangchang =new Array();                                                                           // 明珠广场数据读取
+        $.ajax({
+            url:'data/yuce/guangchang/'+yuceVal+'.json',
+            async:false,
+            success: function(data){
+                dataFile_guangchang = data;
+            }
+        })
+
+        var dataFile_zhengfu =new Array();                                                                              // 政府数据读取
+        $.ajax({
+            url:'data/yuce/zhengfu/'+yuceVal+'.json',
+            async:false,
+            success: function(data){
+                dataFile_zhengfu = data;
+            }
+        })
+
+        var dataFile_daxue =new Array();                                                                                // 大学数据读取
+        $.ajax({
+            url:'data/yuce/daxue/'+yuceVal+'.json',
+            async:false,
+            success: function(data){
+                dataFile_daxue = data;
+            }
+        })
+
+        var dataFile_youyi =new Array();                                                                                // 友谊商城数据读取
+        $.ajax({
+            url:'data/yuce/youyi/'+yuceVal+'.json',
+            async:false,
+            success: function(data){
+                dataFile_youyi = data;
+            }
+        })
+
+        var dataFile_jiudian =new Array();                                                                              // 酒店数据读取
+        $.ajax({
+            url:'data/yuce/jiudian/'+yuceVal+'.json',
+            async:false,
+            success: function(data){
+                dataFile_jiudian = data;
+            }
+        })
+
+        var dataFile_renmin =new Array();                                                                               // 人民医院数据读取
+        $.ajax({
+            url:'data/yuce/renmin/'+yuceVal+'.json',
+            async:false,
+            success: function(data){
+                dataFile_renmin = data;
+            }
+        })
+
+        function getParamValues(name, dataFile) {
+            var ret =[];
+            for (var i = 0, len = dataFile.length; i < len; i++) {
+                ret.push(dataFile[i][name])
+            }
+            return ret
+        }
+
+        var valueTest = [
+            {name:'Market',value:getParamValues('proVal',dataFile_shangchang).map(Number)},
+            {name:'Hospital1',value:getParamValues('proVal',dataFile_fushuyiyuan).map(Number)},
+            {name:'Station',value:getParamValues('proVal',dataFile_chezhan).map(Number)},
+            {name:'Square',value:getParamValues('proVal',dataFile_guangchang).map(Number)},
+            {name:'Government',value:getParamValues('proVal',dataFile_zhengfu).map(Number)},
+            {name:'University',value:getParamValues('proVal',dataFile_daxue).map(Number)},
+            {name:'Friendship',value:getParamValues('proVal',dataFile_youyi).map(Number)},
+            {name:'Hotal',value:getParamValues('proVal',dataFile_jiudian).map(Number)},
+            {name:'Hospital2',value:getParamValues('proVal',dataFile_renmin).map(Number)}
+        ];
+
+        var convertData = function (data) {
+            var res = [];
+            var resArr=[];
+            for (var i = 0; i < 24; i++) {
+                for(var j = 0; j < data.length; j++){
+                    var geoCoord = geoCoordMap[data[j].name];
+                    console.log(geoCoordMap[0])
+                    res.push(geoCoord.concat(data[j].value[i] ));
+                }
+            }
+            for(var k=0;k<res.length;k+=9){
+                resArr.push(res.slice(k,k+9))
+            }
+            return resArr;
+        };
+
+        var convert = new Object();
+        convert = convertData(valueTest);
+        var optionYuceDitu = {
+            baseOption: {
+                title:{
+                    text: "海口市区域订单预测",
+                    left: 'center',
+                    top: 20,
+                    textStyle:{
+                        color: '#cdddf7',
+                        fontSize: 20
+                    },
+                    subtextStyle:{
+                        color: 'white',
+                        fontSize: 16
+                    }
+                },
+                timeline: {
+                    autoPlay:true,
+                    data: ["0:00","1:00","2:00","3:00","4:00","5:00","6:00","7:00","8:00","9:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"],
+                    axisType: 'category',
+                    padding: [5,5,5,5],
+                    playInterval: 2000,
+                    lineStyle:{color:'white'},
+                    label:{
+                        normal:{
+                            textStyle:{
+                                color: 'white',
+                                fontSize: 13
+                            }
+                        }
+                    }
+                },
+                tooltip: {
+                    trigger: 'item',
+                    position:'top',
+                    formatter: function(item){
+                        // if(item.data[2]>=300 && item.data[0]===110.3419978414701){
+                        //     alert("明珠广场车流预警");
+                        // }
+                        // if(item.data[2]>=300 && item.data[0]===110.32354199623335){
+                        //     alert("商场车流预警");
+                        // }
+                        // if(item.data[2]>=300 && item.data[0]===110.33388648979098){
+                        //     alert("附属医院车流预警");
+                        // }
+                        // if(item.data[2]>=300 && item.data[0]===110.3486952530797){
+                        //     alert("海南省政府车流预警");
+                        // }
+                        // if(item.data[2]>=300 && item.data[0]===110.34134652693201){
+                        //     alert("海南师范大学车流预警");
+                        // }
+                        // return '预测车流量：'+ '\r\n'+ Math.round(item.data[2]);
+                    }
+                },
+                amap: {                                                                                                 // 高德地图支持的初始化地图配置
+                    center: [110.33835483551025, 20.01096791722277],                                                    // 高德地图初始中心经纬度
+                    zoom: 13.3,                                                                                         // 高德地图初始缩放级别
+                    resizeEnable: true,                                                                                 // 是否开启resize
+                    mapStyle: "amap://styles/grey",                                                                     // 自定义地图样式主题
+                    echartsLayerZIndex: 2019,                                                                           // 高德地图自定义EchartsLayer的zIndex，默认2000
+                    // 说明：如果想要添加卫星、路网等图层
+                    // 暂时先不要使用layers配置，因为存在Bug
+                    // 建议使用amap.add的方式，使用方式参见最下方代码
+                    viewMode: '3D',                                                                                     //开启3D视图,默认为关闭
+                    buildingAnimation: true,                                                                            //楼块出现是否带动画
+                },
+                visualMap: {
+                    min: 0,
+                    max: 400,
+                    splitNumber: 4,
+                    inRange: {
+                        color: [ 'rgba(154,255,194,0.5)',  'rgba(41,255,26,0.5)', 'rgba(255,112,11,0.5)', 'rgba(166,0,0,0.5)']
+                    },
+                    textStyle: {
+                        color: '#fff'
+                    },
+                    bottom: 30
+                },
+                series: [{
+                    name: '预测',
+                    type: 'effectScatter',
+                    coordinateSystem: 'amap',
+                    showEffectOn: 'render',
+                    rippleEffect: {
+                        brushType: 'stroke'
+                    },
+                    hoverAnimation: true,
+                    label: {
+                        normal: {
+                            formatter: '{b}',
+                            position: 'right',
+                            show: true
+                        }
+                    },
+                    itemStyle: {
+                        opacity: '0.6'
+                    },
+                    symbolSize: function(val) {
+                        if(val[2]<=30)
+                            return Math.round(val[2]);
+                        else return Math.round(val[2] / 3);
+                    }
+                },
+                ]
+
+            },
+            options: []
+        };
+
+        var faultByHourIndex = []
+        var faultByHourTime = setInterval(function() {
+            myYuce.dispatchAction({                                                                                     //使得tootip每隔三秒自动显示
+                type: 'showTip',                                                                                        // 根据 tooltip 的配置项显示提示框。
+                seriesIndex: 0,
+                dataIndex: faultByHourIndex % 9
+            });
+            faultByHourIndex++;
+        }, 3000);
+        for(var i=0;i<24;i++){
+            optionYuceDitu.options.push({
+                series:[{data : convert[i]}]
+            })
+        }
+        myYuce.setOption(optionYuceDitu, true);
+    }
+</script>
+
+<!--和弦图-->
+<script>
+    var sankeyData =new Array() ;
+    function HexianTu(c) {
+        $.ajax({
+            url: 'data/' + c + '_hexiantu.json',
+            async: false,
+            success: function (data) {
+                var temp = new Array();
+                sankeyData = data.value;
+            }
+        });
+
+        Highcharts.chart('container', {
+            title: {
+                text: ' ',
+            },
+            credits: {
+                enabled: false
+            },
+            navigation: {
+                buttonOptions: {
+                    align: 'left',
+                }
+            },
+            colors: ['#A6C840',  '#003d73', '#edd170', '#0878a4', '#c05640',
+                '#f2a104', '#00743f', '#72a2c0', '#f05837', '#c0334d'],
+            chart:{
+                backgroundColor:'rgba(128, 128, 128, 0)'
+            },
+            series: [{
+                keys: ['from', 'to', 'weight'],
+                data: sankeyData,
+                type: 'dependencywheel',
+                name: 'Dependency wheel series',
+                dataLabels: {
+                    color: 'white',
+                    textPath: {
+                        enabled: true,
+                        attributes: {
+                            dy: 5
+                        }
+                    },
+                    distance: 10
+                },
+                size: '95%'
+            }]
+        });
+    }
+</script>
+
+<!--迁徙图-->
+<script type="text/javascript">
+    function qianxitu(a) {
+        var myChartqianxitu = echarts.init(document.getElementById("qianxitu"));
+        //读取数据
+        var geoCoordMap = new Array();
+        var GZData = new Array();
+        $.ajax({
+            url: 'data/qianxitu/'+a+'qianxitu.json',
+            async: false,
+            success: function (data) {
+                GZData = data;
+            }
+        });
+        $.ajax({
+            url: 'data/qianxitu/qianxitupoint.json',
+            async: false,
+            success: function (data) {
+                geoCoordMap = data;
+            }
+        });
+
+        var result=[];
+        for(var i=0;i<GZData.length;i+=3){
+            result.push(GZData.slice(i,i+3));
+        }
+
+        var QSsheng=[];                                                                                                 //琼山数据
+        var QSshi=[];
+        var QSche=[];
+        for(var i=0;i<3;i++){
+            QSsheng[i]=result[0][i][1].name;
+            QSshi[i]=result[0][i][1].name;
+            QSche[i]=result[0][i][1].value;
+        }
+
+        var QSobj = {};
+        for(var i=0;i<QSsheng.length;i++){
+            QSobj[QSshi[i]] = QSsheng[i];
+        }
+
+        var LHsheng=[];                                                                                                 //龙华数据
+        var LHshi=[];
+        var LHche=[];
+        for(var i=0;i<3;i++){
+            LHsheng[i]=result[1][i][1].name;
+            LHshi[i]=result[1][i][1].name;
+            LHche[i]=result[1][i][1].value;
+        }
+
+        var XYsheng=[];                                                                                                 //秀英数据
+        var XYshi=[];
+        var XYche=[];
+        for(var i=0;i<3;i++){
+            XYsheng[i]=result[2][i][1].name;
+            XYshi[i]=result[2][i][1].name;
+            XYche[i]=result[2][i][1].value;
+        }
+
+        var MLsheng=[];                                                                                                 //美兰数据
+        var MLshi=[];
+        var MLche=[];
+        for(var i=0;i<3;i++){
+            MLsheng[i]=result[3][i][1].name;
+            MLshi[i]=result[3][i][1].name;
+            MLche[i]=result[3][i][1].value;
+        }
+
+        var carPath = 'path://M4560,4996.6c-530.4-68.2-932.1-239.8-1201.2-514.8c-156-159.9-508.9-803.4-598.6-1092c-50.7-161.9-52.7-384.2-11.7-840.5c39-421.2,42.9-386.1-54.6-432.9c-117-56.5-208.7-138.4-241.8-216.4c-23.4-58.5-23.4-72.2,7.8-136.5c44.8-93.6,93.6-99.4,263.2-31.2l134.6,54.6l58.5-58.5l58.5-58.5l-48.8-536.3C2822.5-3.2,2808.9-360.1,2846-1095.2c9.7-218.4,5.8-386.1-19.5-663c-66.3-723.5-2-1550.3,159.9-2039.7c72.1-216.4,157.9-366.6,278.8-487.5c87.8-89.7,142.3-122.9,304.2-189.2c349.1-146.3,805.3-257.4,1232.4-302.3c173.6-17.5,269.1-17.5,438.8,0c659.1,74.1,1347.5,298.3,1544.4,505.1c140.4,146.3,255.4,399.7,329.6,733.2c101.4,440.7,134.6,1197.3,80,1758.9c-42.9,432.9-46.8,838.5-11.7,982.8c40.9,165.8,9.8,733.2-107.2,1959.8l-50.7,524.6l58.5,56.6l56.6,56.6l150.1-62.4c175.5-74.1,228.1-64.3,265.2,48.8c39,122.9-42.9,235.9-251.6,341.3l-85.8,44.8l13.6,157.9c7.8,87.8,21.4,261.3,31.2,384.2c25.4,300.3,23.4,503.1-1.9,627.9c-29.3,128.7-397.8,863.9-514.8,1019.9c-222.3,298.3-563.6,489.5-1066.6,596.7C5470.7,5004.4,4797.9,5025.8,4560,4996.6z M5517.5,3073.9c444.6-76.1,811.2-255.5,1051.1-516.8c195-208.7,189.1-152.1,85.8-906.7c-48.8-358.8-93.6-657.2-97.5-661.1c-5.9-5.8-117,11.7-247.7,39c-544,111.2-762.4,134.6-1269.4,134.6c-522.6,2-717.6-19.5-1271.4-128.7c-169.6-33.1-312-56.5-315.9-52.6c-3.9,3.9-48.8,304.2-99.4,664.9l-89.7,657.2l48.8,85.8c56.5,93.6,232,273,356.9,362.7c255.4,183.3,663,313.9,1127.1,360.8C4936.4,3126.5,5338.1,3105.1,5517.5,3073.9z M6443.7-2179.4v-702l-70.2-76.1c-187.2-210.6-573.3-321.8-1197.3-347.1c-717.6-29.2-1302.6,101.4-1519.1,335.4l-80,87.8v692.3c0,380.2,7.8,692.2,15.6,692.2c9.8,0,81.9-17.5,161.9-37c319.8-81.9,618.1-107.3,1236.3-107.3c631.8,0,920.4,25.4,1255.8,113.1c91.6,25.3,173.6,46.8,183.3,48.8C6437.9-1479.4,6443.7-1793.3,6443.7-2179.4z';
+        var type = "流出";
+        var convertData = function (data) {
+            // console.log(data);
+            var res = [];
+            for (var i = 0; i < data.length; i++) {
+                var dataItem = data[i];
+                var fromCoord = geoCoordMap[dataItem[0].name];
+                var toCoord = geoCoordMap[dataItem[1].name];
+                if (fromCoord && toCoord) {
+                    res.push({
+                        fromName: dataItem[0].name,
+                        toName: dataItem[1].name,
+                        coords: [fromCoord, toCoord],
+                        value: dataItem[1].value
+                    });
+                }
+            }
+            return res;
+        };
+
+        ///////////////////// 主要修改迁徙图颜色///////////////////////////////
+        var color = [ 'rgba(235,255,163,0.8)', 'rgba(213,241,112,8)', 'rgba(161,194,63,8)', 'rgba(114,165,56,8)'];
+        var series = [];
+
+        [['琼山区', result[0]], ['龙华区',result[1]], ['秀英区',result[2]],['美兰区',result[3]]].forEach(function (item, i) {
+            series.push({                                                                                               //设置飞行线
+                name: item[0],
+                type: 'lines',
+                coordinateSystem: 'amap',
+                zlevel: 1,
+                effect: {
+                    show: true,
+                    period: 6,
+                    trailLength: 0.7,
+                    color: '#fff',
+                    symbolSize: 3
+                },
+                lineStyle: {                                                                                            //流动线颜色
+                    normal: {
+                        color: color[i],
+                        width: 0,
+                        curveness: 0.2
+                    }
+                },
+                data: convertData(item[1])
+            }, {                                                                                                        //设置轨迹线
+                name: item[0],
+                type: 'lines',
+                coordinateSystem: 'amap',
+                zlevel: 2,
+                symbol: ['none', 'arrow'],
+                symbolSize: 10,
+                effect: {
+                    show: true,
+                    period: 6,
+                    trailLength: 0,
+                    symbol: carPath,
+                    symbolSize: [20,30]
+                },
+                lineStyle: {
+                    normal: {
+                        color: color[i],
+                        width: 1,
+                        opacity: 0.6,
+                        curveness: 0.2
+                    }
+                },
+                data: convertData(item[1])
+            }, {                                                                                                        //设置点
+                name: item[0],
+                type: 'effectScatter',
+                coordinateSystem: 'amap',
+                zlevel: 2,
+                rippleEffect: {
+                    brushType: 'stroke'
+                },
+                label: {
+                    normal: {
+                        show: true,
+                        position: 'inside',
+                        formatter: '{b}'
+                    }
+                },
+                symbolSize: function (val) {
+                    return val[2] / 10;
+                },
+                itemStyle: {
+                    normal: {
+                        color: '#A6C840'
+                    }
+                },
+                data: item[1].map(function (dataItem) {
+                    var name = "123";
+                    if(dataItem[0].name === "琼山区"){
+                        name = result[0][dataItem[1].name];
+                    }
+                    if(dataItem[0].name === "龙华区"){
+                        name = result[1][dataItem[1].name];
+                    }
+                    if(dataItem[0].name === "秀英区"){
+                        name = result[2][dataItem[1].name];
+                    }
+                    if(dataItem[0].name === "美兰区"){
+                        name = result[3][dataItem[1].name];
+                    }
+                    return {
+                        name: name?name:dataItem[1].name,
+                        value: geoCoordMap[dataItem[1].name].concat([dataItem[1].value / 7])                            //改变圆形大小
+                    };
+                })
+            });
+        }), option = {
+                amap: {                                                                                                 // 加载 amap 组件 高德地图支持的初始化地图配置
+                    center: [110.33255483551025, 20.01716791722277],                                                    // 高德地图初始中心经纬度
+                    zoom: 13.3,                                                                                         // 高德地图初始缩放级别
+                    resizeEnable: true,                                                                                 // 是否开启resize
+                    mapStyle: "amap://styles/grey",                                                                     // 自定义地图样式主题
+                    echartsLayerZIndex: 2019,                                                                           // 高德地图自定义EchartsLayer的zIndex，默认2000
+                    // 说明：如果想要添加卫星、路网等图层
+                    // 暂时先不要使用layers配置，因为存在Bug
+                    // 建议使用amap.add的方式，使用方式参见最下方代码
+                    viewMode: '3D',                                                                                     //开启3D视图,默认为关闭
+                    buildingAnimation: true,                                                                            //楼块出现是否带动画
+                },
+                title : {
+                    text: "海口市车流量区域迁徙图",
+                    left: 'center',
+                    top: 20,
+                    textStyle:{
+                        color: '#cdddf7',
+                        fontSize: 20
+                    },
+                    subtextStyle:{
+                        color: 'white',
+                        fontSize: 16
+                    }
+                },
+                tooltip : {
+                    trigger: 'item',
+                    formatter:function(params, ticket, callback){
+                        // console.log(params);
+                        if(params.seriesType=="lines"){
+                            return params.data.fromName+">"+params.data.toName+"<br />"+params.data.value;
+                        }else{
+                            return params.name;
+                        }
+                    }
+                },
+                legend: {
+                    orient: 'vertical',
+                    top: 'bottom',
+                    left: 'right',
+                    data:['琼山区', '龙华区', '秀英区','美兰区'],
+                    textStyle: {
+                        color: '#fff'
+                    },
+                    selectedMode: 'multiple',
+                },
+                series: series
+            };
+        myChartqianxitu.setOption(option, true);
+    }
+</script>
+
+<!--底部 柱状图-->
+<script type="text/javascript">
+    var dom = document.getElementById("lineChart");
+    var myChart_line = echarts.init(dom);
+    var app = {};
+    option = null;
+    var app = {};
+    app.title = '海口市滴滴订单数量折线图 ';
+
+    $.get('data/calendarHeatMap.json', function (data) {
+        var colors = ['rgb(72,137,251)', '#f69617', '#675bba'];
+        myChart_line.setOption(optionCalen = {
+            color: colors,
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross'
+                }
+            },
+            grid: {
+                right: '15%'
+            },
+            legend: {                                                                                                   //还可以展现很多信息（例如，节假日，具体天气情况等等），在这里添加在series里添加数据调用即可
+                top: 15,
+                textStyle:{
+                    color: '#cdddf7'
+                }
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    axisTick: {
+                        alignWithLabel: true
+                    },
+                    data: data.map(function (item) {
+                        return item[0];
+                    }),
+                    axisLine: {
+                        lineStyle: {
+                            color: '#cdddf7',
+                            width: 1,                                                                                   //这里是为了突出显示加上的
+                        }
+                    },
+                }
+            ],
+            yAxis: [{                                                                                                   // 左边坐标轴-订单数量
+                name: '订单数量',
+                type:'value',
+                axisLine: {
+                    lineStyle: {
+                        color: 'rgb(72,137,251)',
+                        width: 1,                                                                                       //这里是为了突出显示加上的
+                    }
+                },
+                splitLine:{
+                    show: true,
+                }
+            }, {                                                                                                        // 右边坐标轴-平均温度
+                name: '平均温度',
+                type: 'value',
+                max: 40,
+                position: 'right',
+                offset: 15,
+                axisLine: {
+                    lineStyle: {
+                        color: '#A6C840',
+                        width: 1,                                                                                       //这里是为了突出显示加上的
+                    }
+                },
+                axisLabel: {
+                    formatter: '{value} ℃'
+                },
+                splitLine: {
+                    show: true,
+                    lineStyle: {
+                        type: 'dashed'
+                    }
+                }
+            }],
+            dataZoom: [
+                {
+                    type: 'slider',
+                    start: 20,
+                    end: 45,
+                    dataBackground:{
+                        lineStyle:{
+                            color: '#fff',
+                            width: 1
+                        }
+                    },
+                    textStyle:{
+                        color:'#cdddf7'
+                    }
+                },
+                {
+                    type: 'inside',
+                    start: 0,
+                    end: 100,
+                    lineStyle:{
+                        color:'#cdddf7'
+                    }
+                },
+                {
+                    show: true,
+                    yAxisIndex: 0,
+                    filterMode: 'empty',
+                    width: 30,
+                    height: '60%',
+                    showDataShadow: false,
+                    left: '93%',
+                    textStyle:{
+                        color:'#cdddf7'
+                    }
+                },
+            ],
+            series: [                                                                                                   //这里是数据读取
+                {
+                    name: '订单数量',
+                    type: 'bar',
+                    areaStyle:{
+                        color: "rgba(5,140,255, 0.2)"
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+                                offset: 0,
+                                color: "rgba(72,137,251,1)"                                                             // 0% 处的颜色
+                            }, {
+                                offset: 1,
+                                color: "rgba(72,137,251,0.5)"                                                           // 100% 处的颜色
+                            }], false)
+                        }
+                    },
+                    data: data.map(function (item) {
+                        return item[1];
+                    }),
+                },
+                {
+                    name: '最高温度',
+                    type: 'line',
+                    yAxisIndex: [1],
+                    itemStyle:{
+                        color: '#f69617'
+                    },
+                    data: data.map(function (item) {
+                        return item[4];
+                    }),
+                },
+                {
+                    name: '最低温度',
+                    type: 'line',
+                    yAxisIndex: [1],
+                    data: data.map(function (item) {
+                        return item[5];
+                    }),
+                    itemStyle:{
+                        color: '#6ec5cf'
+                    }
+                },
+                {
+                    name: '平均温度',
+                    type: 'line',
+                    yAxisIndex: [1],
+                    data: data.map(function (item) {
+                        return item[6];
+                    }),
+                    itemStyle:{
+                        color: '#A6C840'
+                    }
+                },
+            ]
+        });
+    });
+
+    $.get('data/prediction.json', function (data) {                                                                     //显示预测订单
+        // console.log(data[1][1]);
+        optionYuce = {
+            title: {
+                top:'4%',
+                left:'2%',
+                text: '海口市订单数量预测',
+                textStyle:{
+                    color: '#cdddf7',
+                },
+                subtext: '根据算法进行合理预测'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                top: 15,
+                textStyle:{
+                    color: '#cdddf7'
+                },
+                data: ['实际订单', '预测订单']
+            },
+            grid:{
+                top:'28%'
+            },
+            toolbox: {
+                top:'2%',
+                show: true,
+                feature: {
+                    dataView: { show: true, readOnly: false },
+                    magicType: { show: true, type: ['line', 'bar'] },
+                    restore: { show: true },
+                    saveAsImage: { show: true }
+                }
+            },
+            calculable: true,
+            xAxis: [
+                {
+                    type: 'category',
+                    axisLine: {
+                        lineStyle: {
+                            color: '#cdddf7',
+                            width: 1,                                                                                   //这里是为了突出显示加上的
+                        }
+                    },
+                    data: data.map(function (item) {                                                                    //日期数据导入
+                        return item[0];
+                    }),
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    axisLine: {
+                        lineStyle: {
+                            color: 'rgb(72,137,251)',
+                            width: 1,                                                                                   //这里是为了突出显示加上的
+                        }
+                    },
+                }
+            ],
+            dataZoom: [
+                {
+                    show: true,
+                    start: 80,
+                    end: 100,
+                    dataBackground:{
+                        lineStyle:{
+                            color: '#fff',
+                            width: 1
+                        }
+                    },
+                    textStyle:{
+                        color:'#cdddf7'
+                    }
+                },
+                {
+                    type: 'inside',
+                    start: 80,
+                    end: 100,
+                    dataBackground:{
+                        lineStyle:{
+                            color: '#fff',
+                            width: 1
+                        }
+                    },
+                    textStyle:{
+                        color:'#cdddf7'
+                    }
+                },
+                {
+                    show: true,
+                    yAxisIndex: 0,
+                    filterMode: 'empty',
+                    width: 30,
+                    height: '60%',
+                    showDataShadow: false,
+                    left: '93%',
+                    textStyle:{
+                        color:'#cdddf7'
+                    }
+                }
+            ],
+            series: [
+                {
+                    name: '实际订单',                                                                                    //实际滴滴订单数量
+                    type: 'bar',
+                    itemStyle:{
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+                                offset: 0,
+                                color: "rgba(72,137,251,1)"                                                             // 0% 处的颜色
+                            }, {
+                                offset: 1,
+                                color: "rgba(72,137,251,0.5)"                                                           // 100% 处的颜色
+                            }], false)
+                        },
+                    },
+                    data: data.map(function (item) {
+                        return item[1];
+                    }),
+                    markPoint: {
+                        data: [
+                            { type: 'max', name: '最大值' },
+                            { type: 'min', name: '最小值' }
+                        ]
+                    },
+                    markLine: {
+                        lineStyle:{
+                            color: 'rgba(72,137,251,1)',
+                        },
+                        data: [
+                            { type: 'average', name: '平均值' }
+                        ]
+                    }
+                },
+                {
+                    name: '预测订单',
+                    type: 'bar',
+                    itemStyle:{
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+                                offset: 0,
+                                color: "rgb(246,150,23)"                                                                // 0% 处的颜色
+                            }, {
+                                offset: 1,
+                                color: "rgba(246,150,23,0.5)"                                                           // 100% 处的颜色
+                            }], false)
+                        },
+                    },
+                    data: data.map(function (item) {                                                                    //预测订单数量
+                        return item[2];
+                    }),
+                    markPoint: {
+                        data: [
+                            { type: 'max', name: '最大值' },
+                            { type: 'min', name: '最小值' }
+                        ]
+                    },
+                    markLine: {
+                        lineStyle:{
+                            color: 'rgb(246,150,23)',
+                        },
+                        data: [
+                            { type: 'average', name: '平均值' }
+                        ]
+                    }
+                }
+            ]
+        };
+    })
+</script>
+
+<!--变化率视图-->
+<script type="text/javascript">
+    var dom = document.getElementById("container_leidatu");
+    var linemyChart = echarts.init(dom);
+
+    option = null;
+    var app = {};
+    app.title = '海口市滴滴订单变化率折线图 ';
+    function leidatus (a){
+        $.get('data/increament/'+a+'.json', function (data) {
+            linemyChart.setOption(option = {
+                chart:{
+                    backgroundColor:'rgba(128, 128, 128, 0)'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        lineStyle: {
+                            color: '#57617B'
+                        }
+                    }
+                },
+                legend: {
+                    icon: 'rect',
+                    itemWidth: 18,
+                    itemHeight: 5,
+                    itemGap: 13,
+                    data: ['订单数量变化率', 'xxx', 'xxx'],                                                              //在这里添加你想要展示的变化的折现情况
+                    right: '0%',
+                    textStyle: {
+                        fontSize: 12,
+                        color: '#cdddf7'
+                    }
+                },
+                grid: {
+                    left: '5%',
+                    right: '5%',
+                    top: '15%',
+                    bottom:'10%',
+                    containLabel: true
+                },
+                xAxis: [{
+                    type: 'category',
+                    boundaryGap: false,
+                    axisLine: {
+                        lineStyle: {
+                            color: 'rgb(97,165,207)'
+                        }
+                    },
+                    axisLabel:{
+                        fontSize: 14,
+                        color: '#cdddf7'
+                    },
+                    splitLine: {
+                        show: true,
+                        lineStyle: {
+                            color: '#57617B',
+                            type: 'dashed'
+                        }
+
+                    },
+                    data: data.map(function (item) {                                                                    //日期数据添加
+                        return item[0];
+                    }),
+                }],
+                yAxis: [{
+                    type: 'value',
+                    name: '变化率（%）',
+                    axisTick: {
+                        show: false
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: 'rgb(97,165,207)'
+                        }
+                    },
+                    axisLabel: {
+                        margin: 10,
+                        textStyle: {
+                            fontSize: 14,
+                            color: 'rgb(97,165,207)'
+                        },
+                    },
+                    splitLine: {
+                        show: true,
+                        lineStyle: {
+                            color: '#57617B'
+                        }
+                    }
+                }],
+                series: [{                                                                                              //折线图的属性填写
+                    name: '订单数量变化率',
+                    type: 'line',
+                    smooth: true,
+                    symbol: 'circle',
+                    symbolSize: 5,
+                    showSymbol: false,
+                    lineStyle: {
+                        normal: {
+                            width: 3
+                        }
+                    },
+                    areaStyle: {
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{
+                                offset: 0,
+                                color: 'rgba(16,97,204, 0.3)'
+                            }, {
+                                offset: 0.8,
+                                color: 'rgba(17,235,210, 0)'
+                            }], false),
+                            shadowColor: 'rgba(0, 0, 0, 0.1)',
+                            shadowBlur: 10
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{
+                                offset: 0,
+                                color: '#E9F4FA'
+                            }, {
+                                offset: 1,
+                                color: '#125CA3'
+                            }])
+                        },
+                        emphasis: {
+                            color: 'rgb(233,244,255)',
+                            borderColor: 'rgba(233,244,255,0.2)',
+                            extraCssText: 'box-shadow: 8px 8px 8px rgba(0, 0, 0, 1);',
+                            borderWidth: 10
+                        }
+
+                    },
+                    data: data.map(function (item) {                                                                    // 折现数据填写；如果想要添加新的数据在json文件的数组中添加新的即可，item数组依次加一
+                        return item[1];
+                    }),
+                },]
+            });
+        });
+    }
+    if (option && typeof option === "object") {
+        linemyChart.setOption(option, true);
+    }
+</script>
+
+<script>
+    function ShowFastCar (e,b) {
+        $.ajax({
+            url: 'data/fastcar/RealtimeStatistics'+e+'.json',
+            async: false,
+            success: function (data) {
+                var obj = document.getElementById("kuaiche1");
+                obj.innerHTML= data.value[b-1][1];
+                var obj = document.getElementById("kuaiche2");
+                obj.innerHTML= data.value[b-1][2];
+                var obj = document.getElementById("kuaiche3");
+                obj.innerHTML= data.value[b-1][3];
+                var obj = document.getElementById("kuaiche4");
+                obj.innerHTML=data.value[b-1][4];
+            }
+        });
+    }
+</script>
+
+<!--初始化整个视图-->
+<script>
+    window.onload = init;
+    function init(){
+        document.getElementById("idlis").style.display="none";
+        var a='2017-05-13';
+        var f='2017-5-13';
+        var yuceVal ='2017-05-13';
+        var g=0
+        var b= a.split('-')[2];
+        var e= a.split('-')[1];
+        var c='2017-05-13';
+        document.getElementById("demo").innerHTML = a;
+        document.getElementById("demo1").innerHTML = g;
+        myFunction(a,g);
+        yuceFun(yuceVal);
+        Mychart1s(a);
+        HexianTu(a);
+        leidatus(a);
+        ShowFastCar(e,b);
+        qianxitu(a);
+        kedoutu(a,g);
+    }
+</script>
+
+</html>

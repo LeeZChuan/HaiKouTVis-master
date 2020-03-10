@@ -1,0 +1,160 @@
+@charset "utf-8";
+*{
+margin:0; padding:0;
+}
+
+input, button, textarea{ *font-size: 100%;}
+ol, ul { list-style: none; }
+/* tables still need 'cellspacing="0"' in the markup */
+table,tr,td { border-collapse: collapse; border-spacing: 0; margin:0;padding:0;}
+caption, th { text-align: left; }
+.clearfix { clear: both; zoom:1;}
+.clearfix:after { display: block; clear: both; content: "\0020"; visibility: hidden; height: 0; }
+.mytimer{
+	width:960px;
+	margin:40px auto;
+}
+.dateTimeWrap{
+    display: none;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    -o-user-select:none;
+    user-select:none;
+    background: #cdddf7;
+    padding:10px;
+    position: fixed;
+    left:0;
+    top:0;
+    z-index:999;
+    font-size:14px;
+    color:#e2e2e2;
+    width:240px;
+}
+.dateTimeWrap .datePart li.curDay{
+    color:#1ea0fa;
+}
+.dateTimeWrap #dayDat li:hover{
+    border:2px double #fff;
+    background: #1ea0fa;
+    color:#fff;
+}
+.dateTimeWrap #dateTime{
+    *float:left
+}
+.dateTimeWrap .dateTimeHead{
+    *overflow:hidden;
+    padding:8px 0px 4px;
+}
+.dateTimeWrap .datePart li{
+    border:2px double transparent;
+    float: left;
+    cursor: default;
+    vertical-align: middle;
+    width: 30px;
+    height: 26px;
+    text-align: center;
+    line-height: 26px;
+}
+.dateTimeWrap .datePart ul{
+    overflow: hidden;
+}
+.dateTimeWrap .changeMonth{
+    float: right
+}
+.dateTimeWrap .changeMonth #pre,.changeMonth #next{
+    display: inline-block;
+    width:20px;
+    height:20px;
+    cursor: default;
+    /*左右选择箭头*/
+    color:#333;
+    /*左右选择箭头的背景*/
+    background: #fff;
+    text-align: center;
+    line-height:20px;
+}
+.dateTimeWrap .changeMonth #next{
+    margin-left: 10px;
+}
+.dateTimeWrap .dateTimeFoot span,.timeFooter span{
+    cursor: pointer;
+    display: inline-block;
+    /*今天 关闭按钮*/
+    background: #fff;
+    color: #333;
+    height:20px;
+    line-height: 20px;
+    width:50px;
+    text-align: center;
+    margin-left: 6px;
+    float:right;
+}
+.dateTimeWrap .timePart{
+    text-align:center;
+    color:#cdddf7;
+    line-height: 22px;
+}
+.dateTimeWrap .timePart p,.timePart ul{
+    background: #fff;
+}
+.dateTimeWrap .timePart>ul>li{
+    float: left;
+    width:119px;
+    background: #fff;
+    color:#333;
+    border:1px solid #ccc;
+    border-right:none;
+}
+.dateTimeWrap .timePart ul{
+    overflow: hidden;
+}
+.dateTimeWrap .timePart>ul>li p{
+    line-height: 30px;
+    border-bottom:1px solid #ccc;
+}
+.dateTimeWrap .timePart ol{
+    height:180px;
+    overflow-y: hidden;
+    *overflow-y: auto;
+    overflow-x: hidden;
+}
+.dateTimeWrap .timePart ol:hover{
+    overflow-y:auto;
+}
+.dateTimeWrap .timePart ol:hover li{
+    padding-left:17px;
+    *padding-left:0;
+}
+.dateTimeWrap .timePart ol li{
+    line-height: 30px;
+}
+.dateTimeWrap .timePart ol li.cur{
+    background: #1ea0fa;
+    color: #fff
+}
+.dateTimeWrap .dateTimeFoot,.timeFooter{
+    overflow:hidden;
+    margin-top: 10px;
+    height: 20px;
+}
+.dateTimeWrap .timeFooter span{
+    width:80px;
+}
+.dateTimeWrap .timeFooter #ensure{
+    width:50px;
+}
+.dateTimeWrap .dateTimeFoot .selTime,.timeFooter .selTime{
+    float:left;
+    margin-left:0;
+    display:none;
+}
+.dateTimeWrap .selTime{
+    width:80px!important;
+}
+.dateTimeWrap #yearSelect{
+    margin-right: 6px;
+}
+.dateTimeWrap .darkgrey{
+    color:#d0d0d0 !important;
+}
