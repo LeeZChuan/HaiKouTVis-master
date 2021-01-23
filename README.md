@@ -57,9 +57,9 @@ HaiKouTVis
 ## 其他
 
 * 感兴趣的可以关注我的个人公众号，上面会不时分享相关技术与心得
-
+a
 * 公众号名称：当生活遇上Coding
 
-![公众号](imges/微信公众号.jpg)
+![公众号](images/微信公众号.jpg)
 
 Copyright (c) 2020-present LeeZChuan
