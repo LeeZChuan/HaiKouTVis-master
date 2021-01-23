@@ -60,6 +60,6 @@ HaiKouTVis
 
 * 公众号名称：当生活遇上Coding
 
-![公众号](img/微信公众号.jpg)
+![公众号](imges/微信公众号.jpg)
 
 Copyright (c) 2020-present LeeZChuan
