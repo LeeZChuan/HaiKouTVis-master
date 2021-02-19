@@ -2,7 +2,7 @@
 
 项目演示网页：https://leezchuan.github.io/HaiKouTVis-master/
 
- CCF海口市-交通流量时空演变特征可视分析 第三名作品 
+ CCF海口市-交通流量时空演变特征可视分析 三等奖作品 
  含项目工程源码、答卷
 
  ## 技术栈
